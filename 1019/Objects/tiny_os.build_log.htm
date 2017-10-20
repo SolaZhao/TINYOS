@@ -21,21 +21,26 @@ Target DLL:      UL2CM3.DLL V1.160.3.0
 Dialog DLL:      TCM.DLL V1.32.0.0
  
 <h2>Project:</h2>
-D:\ZXL_PRJ\TINYOS\1019\tiny_os.uvprojx
-Project File Date:  10/19/2017
+D:\ZXL_PRJ\GITHUB\TINYOS\1019\tiny_os.uvprojx
+Project File Date:  10/20/2017
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\Keil_v5\ARM\ARMCC\Bin'
-Build target 'Target 1'
+Rebuild target 'Target 1'
 assembling startup_ARMCM3.s...
 compiling main.c...
-Source\main.c(19): warning:  #1-D: last line of file ends without a newline
+Source\main.c(43): warning:  #1-D: last line of file ends without a newline
   }
 Source\main.c: 1 warning, 0 errors
+compiling switch.c...
+source\switch.c(21): warning:  #1-D: last line of file ends without a newline
+  }
+source\switch.c(22): warning: A1581W: Added 2 bytes of padding at address 0x1e
+source\switch.c: 1 warning, 0 errors
 compiling system_ARMCM3.c...
 linking...
-Program Size: Code=420 RO-data=224 RW-data=8 ZI-data=4192  
-".\Objects\tiny_os.axf" - 0 Error(s), 1 Warning(s).
+Program Size: Code=504 RO-data=224 RW-data=16 ZI-data=8288  
+".\Objects\tiny_os.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -54,12 +59,12 @@ Package Vendor: ARM
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::Device:Startup:1.0.1
+      Source file:   Device\ARM\ARMCM3\Source\system_ARMCM3.c
       Include file:  Device\ARM\ARMCM3\Include\ARMCM3.h
       Source file:   Device\ARM\ARMCM3\Source\ARM\startup_ARMCM3.s
-      Source file:   Device\ARM\ARMCM3\Source\system_ARMCM3.c
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:10
+Build Time Elapsed:  00:00:00
 </pre>
 </body>
 </html>
