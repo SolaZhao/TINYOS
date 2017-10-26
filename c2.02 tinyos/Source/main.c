@@ -1,7 +1,5 @@
 #include "tinyOS.h"
 
-
-
 tTask *currentTask;
 tTask *nextTask;
 tTask *taskTable[2];
@@ -61,12 +59,16 @@ tTaskStack task2Env[1024];
 int task1Flag;
 void task1Entry(void * param)
 {
+	unsigned long value = *(unsigned long*)param;
+	value++;
 	for(;;)
 	{
 		task1Flag = 0;
 		delay(100);
 		task1Flag = 1;
 		delay(100);
+		
+		tTaskSched();
 	}
 }
 
@@ -79,6 +81,8 @@ void task2Entry(void * param)
 		delay(100);
 		task2Flag = 1;
 		delay(100);
+		
+		tTaskSched();
 	}
 }
 
