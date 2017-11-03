@@ -3,20 +3,81 @@
 
 tTask *currentTask;
 tTask *nextTask;
+tTask *idleTask;
 tTask *taskTable[2];
 
 void tTaskSched (void)
 {
-	if(currentTask == taskTable[0])
+	if(currentTask == idleTask)
 	{
-		nextTask = taskTable[1]; 
+		if(taskTable[0]->delayTicks == 0)
+		{
+			nextTask = taskTable[0];
+		}			
+		else if(taskTable[1]->delayTicks == 0)
+		{
+			nextTask = taskTable[1];
+		}
+		else
+		{
+			return;
+		}
 	}
 	else
 	{
-		nextTask = taskTable[0];
+		if(currentTask == taskTable[0])
+		{
+			if(taskTable[1]->delayTicks == 0)
+			{
+				nextTask = taskTable[1];
+			}
+			else if(currentTask->delayTicks != 0)
+			{
+				nextTask = idleTask;
+			}
+			else
+			{
+				return;
+			}
+		}
+		else if(currentTask == taskTable[1])
+		{
+			if(taskTable[0]->delayTicks == 0)
+			{
+				nextTask = taskTable[0];
+			}
+			else if(currentTask->delayTicks != 0)
+			{
+				nextTask = idleTask;
+			}
+			else
+			{
+				return;
+			}
+		}
 	}
 	
 	tTaskSwitch();
+}
+
+void tTaskSystemTickHandler()
+{
+	int i;
+	for(i=0;i<2;i++)
+	{
+		if(taskTable[i]->delayTicks > 0)
+		{
+			taskTable[i]->delayTicks--;
+		}
+	}
+	
+	tTaskSched();
+}
+
+void tTaskDelay(uint32_t delay)
+{
+	currentTask->delayTicks = delay;
+	tTaskSched();
 }
 
 void tSetSysTickPeriod(uint32_t ms)
@@ -31,7 +92,7 @@ void tSetSysTickPeriod(uint32_t ms)
 
 void SysTick_Handler()
 {
-	tTaskSched();
+	tTaskSystemTickHandler();
 }
 
 void tTaskInit(tTask *task, void (*entry)(void *), void *param, tTaskStack *stack)
@@ -54,6 +115,7 @@ void tTaskInit(tTask *task, void (*entry)(void *), void *param, tTaskStack *stac
 	*(--stack) = (unsigned long)0x5;
 	*(--stack) = (unsigned long)0x4;
 	task->stack = stack; 
+	task->delayTicks = 0;
 }
 
 void delay(int count)
@@ -69,11 +131,20 @@ tTask tTask2;
 tTaskStack task1Env[1024];
 tTaskStack task2Env[1024];
 
+tTask tTaskIdle;
+tTaskStack idleTaskEnv[1024];
+
+void idleTaskEntry(void *param)
+{
+	for(;;)
+	{}
+}
+
 
 int task1Flag;
 void task1Entry(void * param)
 {
-	tSetSysTickPeriod(10);
+	tSetSysTickPeriod(1000);
 	for(;;)
 	{
 		task1Flag = 0;
@@ -103,7 +174,11 @@ int main()
 	taskTable[0] = &tTask1;
 	taskTable[1] = &tTask2;
 	
+	tTaskInit(&tTaskIdle, idleTaskEntry, (void *)0,&idleTaskEnv[1024]);
+	idleTask = &tTaskIdle;
+	
 	nextTask = taskTable[0];
+	
 	
 	tTaskRunFirst();
 	

@@ -19,7 +19,6 @@ __asm void PendSV_Handler(void)
 	CBZ R0,PendSVHander_nosave //若R0为0则跳转到PendSVHander_nosave
 	
 	STMDB R0!,{R4-R11}
-	
 	LDR R1,=currentTask
 	LDR R1,[R1]
 	STR R0,[R1]
